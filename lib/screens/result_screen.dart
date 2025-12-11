@@ -1,45 +1,38 @@
 import 'package:flutter/material.dart';
 
 class ResultScreen extends StatelessWidget {
-  final double averageRating;
-  final String topRecipeName;
-  final VoidCallback onRestart;
+  final double average;
+  final String topRecipe;
+  final Function() onRestart;
 
   const ResultScreen({
     super.key,
-    required this.averageRating,
-    required this.topRecipeName,
+    required this.average,
+    required this.topRecipe,
     required this.onRestart,
   });
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(30),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              "Average Rating: ${averageRating.toStringAsFixed(1)} ⭐",
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 15),
-            Text(
-              "Top Recipe: $topRecipeName",
-              style: const TextStyle(fontSize: 20),
-            ),
-            const SizedBox(height: 30),
-
-            ElevatedButton(
-              onPressed: onRestart,
-              child: const Text("Restart"),
-            ),
-          ],
-        ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Average Rating: ${average.toStringAsFixed(1)} ⭐",
+            style: const TextStyle(fontSize: 22, color: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            "Top Recipe: $topRecipe",
+            style: const TextStyle(fontSize: 22, color: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: onRestart,
+            child: const Text("Restart"),
+          ),
+        ],
       ),
     );
   }

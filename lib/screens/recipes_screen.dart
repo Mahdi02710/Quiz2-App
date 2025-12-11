@@ -1,35 +1,42 @@
 import 'package:flutter/material.dart';
-import '../widgets/recipe_item.dart';
 import '../data/recipes.dart';
+import '../models/recipe.dart';
+import '../widgets/recipe_item.dart';
 
 class RecipesScreen extends StatelessWidget {
-  final void Function(int, String) onSelectRating;
   final Function() onSubmit;
+  final Function(int index, String emoji) onSelectRating;
 
   const RecipesScreen({
     super.key,
-    required this.onSelectRating,
     required this.onSubmit,
+    required this.onSelectRating,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
+    return Padding(
+      padding: const EdgeInsets.all(25.0),
       child: Column(
         children: [
-          ...recipes.asMap().entries.map((entry) {
-            int index = entry.key;
-            var recipe = entry.value;
-
-            return RecipeItem(
-              recipe: recipe,
-              index: index,
-              onSelectRating: onSelectRating,
-            );
-          }),
-
-          const SizedBox(height: 20),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: List.generate(
+                  recipes.length,
+                  (index) => RecipeItem(
+                    recipe: recipes[index],
+                    index: index,
+                    onSelectRating: onSelectRating,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: onSubmit,
+            child: const Text("Submit Ratings"),
+          ),
         ],
       ),
     );

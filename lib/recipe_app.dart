@@ -12,49 +12,79 @@ class RecipeApp extends StatefulWidget {
 }
 
 class _RecipeAppState extends State<RecipeApp> {
-  String currentScreen = "recipes-screen";
+  String currentScreen = "recipes";
+  List<String> selectedRatings = List.filled(recipes.length, "");
 
-  // selectedRatings is initially filled with empty strings because the rating is not yet given.
-  List<String> selectedRatings = List.filled(
-    recipes.length,
-    "",
-  );
+  double get averageRating {
+    int sum = 0;
+    int count = 0;
 
-  String topRecipeName() {
-    int bestValue = -1;
-    String bestName = "";
+    for (var r in selectedRatings) {
+      if (r.isNotEmpty) {
+        sum += emojiToValue[r]!;
+        count++;
+      }
+    }
 
-    for (int i = 0; i < recipes.length; i++) {
+    return count == 0 ? 0 : sum / count;
+  }
+
+  String get topRecipe {
+    int maxVal = -1;
+    String best = "";
+
+    for (int i = 0; i < selectedRatings.length; i++) {
       if (selectedRatings[i].isNotEmpty) {
-        int value = emojiToValue[selectedRatings[i]]!;
-        if (value > bestValue) {
-          bestValue = value;
-          bestName = recipes[i].recipeName;
+        int v = emojiToValue[selectedRatings[i]]!;
+        if (v > maxVal) {
+          maxVal = v;
+          best = recipes[i].recipeName;
         }
       }
     }
-    return bestName;
+
+    return best.isEmpty ? "None" : best;
   }
 
-  void _restart() {
+  void selectRating(int index, String rating) {
+    setState(() {
+      selectedRatings[index] = rating;
+    });
+  }
+
+  void submit() {
+    setState(() {
+      currentScreen = "result";
+    });
+  }
+
+  void restart() {
     setState(() {
       selectedRatings = List.filled(recipes.length, "");
-      currentScreen = "recipes-screen";
+      currentScreen = "recipes";
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget? screenWidget;
+    Widget screenWidget;
+
+    if (currentScreen == "recipes") {
+      screenWidget = RecipesScreen(
+        onSubmit: submit,
+        onSelectRating: selectRating,
+      );
+    } else {
+      screenWidget = ResultScreen(
+        average: averageRating,
+        topRecipe: topRecipe,
+        onRestart: restart,
+      );
+    }
 
     return Scaffold(
       body: screenWidget,
-      backgroundColor: const Color.fromARGB(
-        255,
-        73,
-        168,
-        122,
-      ),
+      backgroundColor: const Color.fromARGB(255, 73, 168, 122),
     );
   }
 }
